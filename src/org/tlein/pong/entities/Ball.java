@@ -14,6 +14,15 @@ import org.tlein.pong.Game;
  * @author Tucker Lein
  */
 public class Ball extends MoveableEntity {
+	
+	/* boolean determining if ball is being reset */
+	private boolean reseting = false;
+	
+	/* time the ball was initially being reset at */
+	private long curTime;
+	
+	/* direction the newly reset ball will be traveling in */
+	private int resetDir;
 
 	/**
 	 * Constructs the Ball with the given shape
@@ -48,8 +57,18 @@ public class Ball extends MoveableEntity {
 	@Override
 	public void update(GameContainer gc, int delta) throws SlickException {
 		super.update(gc, delta);
-		xMovement(movementVect.getX() * delta);
-		yMovement(movementVect.getY() * delta);
+		
+		/* If the ball is reseting, call resetBall to check if time delay has passed */
+		if(reseting) {
+			resetBall(resetDir);
+		} 
+		/* Else if the ball is NOT reseting, apply the movement. This stops the ball from
+		 * moving while the position is being reset.
+		 */
+		else {
+			xMovement(movementVect.getX() * delta);
+			yMovement(movementVect.getY() * delta);
+		}
 	}
 
 
@@ -85,8 +104,18 @@ public class Ball extends MoveableEntity {
 			movementVect.set(-movementVect.getX(), movementVect.getY());
 			
 			/* determine which paddle to give points to */
-			if(s.getX() < 0) Game.getPoints()[1]++;
-			else if(s.getX() + s.getWidth() > Game.getWidth()) Game.getPoints()[0]++;
+			if(s.getX() < 0) {
+				Game.getPoints()[1]++;
+				
+				/* point was scored, reset the ball going to the right */
+				resetBall(1);
+			} else if(s.getX() + s.getWidth() > Game.getWidth()) {
+				Game.getPoints()[0]++;
+				
+				/* point was scored, reset the ball going to the left */
+				resetBall(0);
+			}
+			
 			return true;
 		}
 		
@@ -95,9 +124,56 @@ public class Ball extends MoveableEntity {
 			if(!this.equals(e) && s.intersects(e.getShape())) {
 				/* if colliding with paddle, flip x movement */
 				movementVect.set(-movementVect.getX(), movementVect.getY());
+				
+				/* Shifts the ball to the edge of the paddle, this is so the ball doesn't
+				 * hit the top or bottom of the paddle and then get stuck flipping back 
+				 * and forth in the x direction
+				 */
+				/* If the paddle is on the left side of the screen */
+				if(e.getShape().getX() < Game.getWidth()/2) {
+					/* set the ball to the right side of the paddle + 1 */
+					shape.setX(e.getShape().getX() + e.getShape().getWidth() + 1);
+				}
+				/* else if the paddle is on the right side of the screen */
+				else if(e.getShape().getX() > Game.getWidth()/2) {
+					/* set the ball to the left side of the paddle - 1 */
+					shape.setX(e.getShape().getX() - shape.getWidth() - 1);
+				}
+				
 				return true;
 			}
 		}
 		return false;
+	}
+	
+	/**
+	 * Resets the ball and starts moving it in the direction provided
+	 * 
+	 * @param dir direction ball will start moving in, 0 for left 1 for right
+	 */
+	private void resetBall(int dir) {
+		/* First time in, reseting will be false, grab the current time, the current dir,
+		 * and setup the new location and movementVect's directions
+		 */
+		if(!reseting) {
+			curTime = System.currentTimeMillis();
+			resetDir = dir;
+			reseting = true;
+			if(dir == 0) {
+				movementVect.set(Math.abs(movementVect.getX()), Math.abs(movementVect.getY()));
+				shape.setLocation(50, 50);
+			} else if(dir == 1) {
+				movementVect.set(-(Math.abs(movementVect.getX())), Math.abs(movementVect.getY()));
+				shape.setLocation(Game.getWidth() - 50 - shape.getWidth(), 50);
+			}
+		}
+		
+		/*
+		 * If 500 milliseconds have passed (1/2 a second), set reseting to false. This
+		 * resumes the movement of the ball
+		 */
+		if(System.currentTimeMillis() - curTime > 500) {
+			reseting = false;
+		}
 	}
 }

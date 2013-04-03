@@ -7,6 +7,7 @@ import org.newdawn.slick.BasicGame;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.font.effects.ColorEffect;
@@ -63,7 +64,7 @@ public class Game extends BasicGame {
 		font.loadGlyphs();
 		
 		entities.add(new Paddle(new Rectangle(10, 200, 15, 75)));
-		entities.add(new Paddle(new Rectangle(width - 20, 200, 15, 75)));
+		entities.add(new Paddle(new Rectangle(width - 20, 200, 15, 75), true));
 		entities.add(new Ball(new Rectangle(50, 50, 10, 10)));
 		for(Entity o : entities) {
 			o.init(gc);

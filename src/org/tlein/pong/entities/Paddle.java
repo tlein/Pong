@@ -15,6 +15,14 @@ import org.newdawn.slick.geom.Shape;
  * @author Tucker Lein
  */
 public class Paddle extends ControlledEntity {	
+	
+	/* Input int code of the key used to go upwards */
+	private int upKey;
+	
+	/* Input int code of the key used to go downwards */
+	private int downKey;
+	
+	private boolean controller = false;
 
 	/**
 	 * Define a new paddle with the given Slick Shape
@@ -23,7 +31,20 @@ public class Paddle extends ControlledEntity {
 	 */
 	public Paddle(Shape shape) {
 		super(shape);
+		this.upKey = Input.KEY_UP;
+		this.downKey = Input.KEY_DOWN;
 		movementVect.set(0, 0.5f);
+	}
+	
+	public Paddle(Shape shape, int upKey, int downKey) {
+		this(shape);
+		this.upKey = upKey;
+		this.downKey = downKey;
+	}
+	
+	public Paddle(Shape shape, boolean controller) {
+		this(shape);
+		this.controller = controller;
 	}
 
 	/**
@@ -45,7 +66,7 @@ public class Paddle extends ControlledEntity {
 	@Override
 	public void update(GameContainer gc, int delta) throws SlickException {
 		super.update(gc, delta);
-		if(!inputStack.isEmpty()) {
+		if((!controller && !inputStack.isEmpty()) || (controller && !controllerStack.isEmpty())) {
 			checkInput(delta);
 		}
 	}
@@ -69,10 +90,18 @@ public class Paddle extends ControlledEntity {
 	 * @param delta time since last update
 	 */
 	private void checkInput(int delta) {
-		if(inputStack.peek() == Input.KEY_UP) { //moving up
-			yMovement(-movementVect.getY() * delta);
-		} else if(inputStack.peek() == Input.KEY_DOWN) { //moving down
-			yMovement(movementVect.getY() * delta);
+		if(!controller) {
+			if(inputStack.peek() == upKey) { //moving up
+				yMovement(-movementVect.getY() * delta);
+			} else if(inputStack.peek() == downKey) { //moving down
+				yMovement(movementVect.getY() * delta);
+			}
+		} else {
+			if(controllerStack.peek() == 0) { //moving up
+				yMovement(-movementVect.getY() * delta);
+			} else if(controllerStack.peek() == 1) { //moving down
+				yMovement(movementVect.getY() * delta);
+			}
 		}
 	}
 	
