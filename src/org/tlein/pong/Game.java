@@ -51,7 +51,6 @@ public class Game extends BasicGame {
 	 */
 	public Game(String title) {
 		super(title);
-		points[0] = 5;
 	}
 
 	/**
