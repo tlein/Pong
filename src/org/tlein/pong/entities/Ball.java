@@ -4,6 +4,7 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.Sound;
 import org.newdawn.slick.geom.Shape;
 import org.tlein.pong.Game;
 
@@ -23,6 +24,8 @@ public class Ball extends MoveableEntity {
 	
 	/* direction the newly reset ball will be traveling in */
 	private int resetDir;
+	
+	private Sound boop;
 
 	/**
 	 * Constructs the Ball with the given shape
@@ -45,6 +48,7 @@ public class Ball extends MoveableEntity {
 	@Override
 	public void init(GameContainer gc) throws SlickException {
 		super.init(gc);
+		boop = new Sound("res/sounds/boop.ogg");
 	}
 
 
@@ -139,6 +143,9 @@ public class Ball extends MoveableEntity {
 					/* set the ball to the left side of the paddle - 1 */
 					shape.setX(e.getShape().getX() - shape.getWidth() - 1);
 				}
+				
+				/* play boop sfx */
+				boop.play();
 				
 				return true;
 			}

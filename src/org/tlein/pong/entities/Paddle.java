@@ -22,6 +22,7 @@ public class Paddle extends ControlledEntity {
 	/* Input int code of the key used to go downwards */
 	private int downKey;
 	
+	/* determines if paddle is controlled by a controller */
 	private boolean controller = false;
 
 	/**
@@ -36,12 +37,25 @@ public class Paddle extends ControlledEntity {
 		movementVect.set(0, 0.5f);
 	}
 	
+	/**
+	 * Constructs a new Paddle with the given shape, upKey, and downKey
+	 * 
+	 * @param shape Shape of Paddle
+	 * @param upKey input key that the keyboard will relate to upward movement
+	 * @param downKey input key that the keyboard will relate to downward movement
+	 */
 	public Paddle(Shape shape, int upKey, int downKey) {
 		this(shape);
 		this.upKey = upKey;
 		this.downKey = downKey;
 	}
 	
+	/**
+	 * Constructs a new Paddle with the given shape, and controller boolean
+	 * 
+	 * @param shape Shape of Paddle
+	 * @param controller true if controlled by controller, false by default
+	 */
 	public Paddle(Shape shape, boolean controller) {
 		this(shape);
 		this.controller = controller;

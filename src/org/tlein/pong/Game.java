@@ -36,6 +36,12 @@ public class Game extends BasicGame {
 	
 	/* the two player's points, 0 is left player's, 1 is right player's */
 	private static int[] points = new int[2];
+	
+	/* if the game has been won, set to true else it is set to false */
+	private boolean won = false;
+	
+	/* the score needed to win the game */
+	private int scoreLimit = 5;
 
 	/**
 	 * Constructs new Game object, which calls the parent's BasicGame
@@ -45,6 +51,7 @@ public class Game extends BasicGame {
 	 */
 	public Game(String title) {
 		super(title);
+		points[0] = 5;
 	}
 
 	/**
@@ -64,7 +71,7 @@ public class Game extends BasicGame {
 		font.loadGlyphs();
 		
 		entities.add(new Paddle(new Rectangle(10, 200, 15, 75)));
-		entities.add(new Paddle(new Rectangle(width - 20, 200, 15, 75), true));
+		entities.add(new Paddle(new Rectangle(width - 20, 200, 15, 75)));
 		entities.add(new Ball(new Rectangle(50, 50, 10, 10)));
 		for(Entity o : entities) {
 			o.init(gc);
@@ -79,8 +86,17 @@ public class Game extends BasicGame {
 	 */
 	@Override
 	public void update(GameContainer gc, int delta) throws SlickException {
-		for(Entity o : entities) {
-			o.update(gc, delta);
+		if(!won) {
+			for(Entity o : entities) {
+				o.update(gc, delta);
+			}
+			if(points[0] == scoreLimit || points[1] == scoreLimit) {
+				won = true;
+			}
+		} else {
+			if(gc.getInput().isKeyPressed(Input.KEY_R)) {
+				resetGame();
+			}
 		}
 	}
 
@@ -104,6 +120,24 @@ public class Game extends BasicGame {
 		for(Entity o : entities) {
 			o.render(gc, g);
 		}
+		
+		if(won) {
+			if(points[0] == scoreLimit) {
+				g.drawString("Left wins!", 50, 10);
+			} else if(points[1] == scoreLimit) {
+				g.drawString("Right wins!", 500, 10);
+			}
+			g.drawString("Press R to replay", 200, 550);
+		}
+	}
+
+	/**
+	 * Resets the values of the game
+	 */
+	private void resetGame() {
+		won = false;
+		points[0] = 0;
+		points[1] = 0;
 	}
 	
 	/**
