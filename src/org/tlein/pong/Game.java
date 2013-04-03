@@ -46,6 +46,11 @@ public class Game extends BasicGame {
 		super(title);
 	}
 
+	/**
+	 * initializes the Game's elements and calls init on the entities
+	 * 
+	 * @param gc GameContainer context
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public void init(GameContainer gc) throws SlickException {
@@ -65,6 +70,12 @@ public class Game extends BasicGame {
 		}
 	}
 	
+	/**
+	 * Updates the Entities and Game information
+	 * 
+	 * @param gc GameContainer context
+	 * @param delta time since last update
+	 */
 	@Override
 	public void update(GameContainer gc, int delta) throws SlickException {
 		for(Entity o : entities) {
@@ -72,6 +83,12 @@ public class Game extends BasicGame {
 		}
 	}
 
+	/**
+	 * Renders the board, points, and entities
+	 * 
+	 * @param gc GameContainer context
+	 * @param g Graphics context
+	 */
 	@Override
 	public void render(GameContainer gc, Graphics g) throws SlickException {
 		g.setColor(Color.black);
@@ -88,29 +105,41 @@ public class Game extends BasicGame {
 		}
 	}
 	
+	/**
+	 * @return width of window
+	 */
 	public static int getWidth() {
 		return width;
 	}
 	
+	/**
+	 * @return height of window
+	 */
 	public static int getHeight() {
 		return height;
 	}
 	
+	/**
+	 * @return ArrayList of all the game's Entities
+	 */
 	public static ArrayList<Entity> getEntities() {
 		return entities;
 	}
 	
+	/**
+	 * @return array containing the paddles points
+	 */
 	public static int[] getPoints() {
 		return points;
 	}
-	
+
 	public static void main(String[] args) throws SlickException {
-		Game g = new Game("Pong");
-		AppGameContainer app = new AppGameContainer(g);
-		app.setDisplayMode(800, 600, false);
-		app.setTargetFrameRate(60);
-		app.setShowFPS(false);
-		app.start();
+		Game g = new Game("Pong"); //create instance of Game, which extends BasicGame
+		AppGameContainer app = new AppGameContainer(g); //AppGameContainer takes in a BasicGame and runs the system
+		app.setDisplayMode(800, 600, false); //sets the display properties of the window
+		app.setTargetFrameRate(60); //sets the target framerate the game will run at
+		app.setShowFPS(false); //don't print the fps to the screen
+		app.start(); //start the game loop
 	}
 
 }

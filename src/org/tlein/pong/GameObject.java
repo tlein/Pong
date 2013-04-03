@@ -5,7 +5,7 @@ import org.newdawn.slick.*;
 /**
  * Top level abstract class all objects inherit from
  * 
- * @author tucker lein
+ * @author Tucker Lein
  */
 public abstract class GameObject {
 	
